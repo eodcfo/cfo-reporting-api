@@ -32,4 +32,9 @@ def process_cfo():
         return jsonify({"error": str(e)}), 400
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     app.run(debug=True)
+=======
+    app.run(debug=True, host='0.0.0.0', port=8080)
+
+>>>>>>> 9087690 (fix: re-add working app.py with correct port)
