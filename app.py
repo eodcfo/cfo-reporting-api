@@ -26,6 +26,57 @@ def process_cfo():
 
         # Read CSVs
         pos_df = pd.read_csv(io.StringIO(pos_file.read().decode('utf-8')))
+
+# --- POS Classification Logic ---
+
+def classify_pos_item(row):
+    item = str(row['Item Name']).lower()
+    branch = str(row['Branch Name']).lower()
+    created_by = str(row['Created By']).lower()
+
+    # Annual Pass
+    if any(k in item for k in ['annual pass', 'full on masti']):
+        return 'Annual Pass'
+
+    # F&B by Branch Name (outside gate)
+    fnb_branches = [
+        'momo kiosk', 'softy corner', 'eod maggi', 'dhinchak dhaba',
+        'ice cream parlour & kart', 'dhinchak nukkad', 'snow pops n more',
+        'buffet & events', 'trampoline cafe', 'tea stall', 'dhinchak by the lake'
+    ]
+    if branch in fnb_branches:
+        return 'F&B Revenue'
+
+    # F&B by Item (even inside TC-1 to TC-5)
+    fnb_items = ['veg sandwich', 'veg pizza', 'veg pasta', 'just milk', 'chai', 'coffee']
+    if any(k in item for k in fnb_items):
+        return 'F&B Revenue'
+
+    # Games Revenue
+    game_branches = [
+        'jump n fun', 'p&h', 'boating', 'vr games', 'e-o-d gun shooting',
+        'carnival games', 'carnival event'
+    ]
+    if branch in game_branches:
+        return 'Games Revenue'
+
+    # DME Gate Revenue
+    if 'dme' in branch:
+        return 'Gate Revenue (DME)'
+
+    # Locker Charges → Counted in MV revenue, not in footfall
+    if 'locker' in item:
+        return 'Gate Revenue (MV)'
+
+    # Gate Revenue (MV) default
+    if 'eod' in branch and branch != 'every other day at dme':
+        return 'Gate Revenue (MV)'
+
+    return 'Unclassified'
+
+# Apply the classification to the POS data
+pos_df['Category'] = pos_df.apply(classify_pos_item, axis=1)
+
         upi_df = pd.read_csv(io.StringIO(upi_file.read().decode('utf-8')))
 
         # Read Excel file
