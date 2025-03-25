@@ -1,0 +1,19 @@
+{
+  "build": {
+    "env": {
+      "PYTHONUNBUFFERED": "1"
+    }
+  },
+  "deploy": {
+    "startCommand": "python app.py",
+    "restartPolicyType": "ON_FAILURE"
+  },
+  "services": [
+    {
+      "name": "web",
+      "port": 5000,
+      "protocol": "HTTP"
+    }
+  ]
+}
+
