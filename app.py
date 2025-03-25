@@ -30,10 +30,17 @@ def process_cfo():
 # --- POS Classification Logic ---
 
 def classify_pos_item(row):
-    item = str(row['Item Name']).lower()
-    branch = str(row['Branch Name']).lower()
-    created_by = str(row['Created By']).lower()
+try: 
+    item = (row['Item Name']).lower()
+    branch = (row['Branch Name']).lower()
+    counter = (row['Created By']).lower()
+# classification logic here
 
+        return "Some Category"
+
+    except Exception as e:
+        print("Error in classification:", e)
+        return "Unclassified"
     # Annual Pass
     if any(k in item for k in ['annual pass', 'full on masti']):
         return 'Annual Pass'
