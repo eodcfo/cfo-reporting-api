@@ -30,16 +30,40 @@ def process_cfo():
 # --- POS Classification Logic ---
 
 def classify_pos_item(row):
-try: 
-    item = (row['Item Name']).lower()
-    branch = (row['Branch Name']).lower()
-    counter = (row['Created By']).lower()
-# classification logic here
+    try:
+        item = row['Item Name'].lower()
+        counter = row['Counter Name'].lower()
+        branch = row['Branch Name'].lower()
+        created_by = row['Created By'].lower()
 
-        return "Some Category"
+        # Gate Revenue (MV)
+        if branch == "eod":
+            if item in ["annual pass", "annual pass (kids)", "annual pass full on masti", "annual pass entry"]:
+                return "Annual Pass"
+            elif counter in ["tc-1", "tc-2", "tc-3", "tc-4", "tc-5"]:
+                if item in ["just milk", "veg sandwich", "veg pizza", "veg pasta", "masala chai", "hot coffee"]:
+                    return "F&B"
+                else:
+                    return "Gate Revenue (MV)"
+            elif counter in ["buffet & events", "tea stall", "dhinchak by the lake"]:
+                return "F&B"
+        elif branch == "every other day at dme":
+            return "Gate Revenue (DME)"
+        elif branch in [
+            "momo kiosk", "softy corner", "eod maggi", "dhinchak dhaba",
+            "ice cream parlour & kart", "dhinchak nukkad", "snow pops n more",
+            "buffet & events", "trampoline cafe", "tea stall", "dhinchak by the lake"
+        ]:
+            return "F&B"
+        elif branch in [
+            "jump n fun", "p&h", "boating", "vr games", "e-o-d gun shooting",
+            "carnival event", "carnival games"
+        ]:
+            return "Park Games"
 
+        return "Unclassified"
+    
     except Exception as e:
-        print("Error in classification:", e)
         return "Unclassified"
     # Annual Pass
     if any(k in item for k in ['annual pass', 'full on masti']):
