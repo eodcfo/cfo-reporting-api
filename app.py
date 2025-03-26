@@ -51,8 +51,7 @@ def classify_pos_item(row):
 
         if any(ap in item for ap in annual_pass_items):
             return "Annual Pass Revenue"
-        if item in fnb_items:
-            return "F&B Revenue"
+        if any(item.lower() == f.lower() for f in fnb_items):
         if counter in fnb_counters:
             return "F&B Revenue"
         if counter in game_counters:
@@ -86,6 +85,7 @@ def process_cfo():
         pos_df['Total Amount'] = pos_df['Net Amount'] + pos_df['Taxes']
 
         revenue_summary = pos_df.groupby('Category')['Total Amount'].sum().round(2).to_dict()
+print(revenue_summary)
 
         return jsonify({
             "status": "success",
