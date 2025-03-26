@@ -51,7 +51,7 @@ def classify_pos_item(row):
 
         if any(ap in item for ap in annual_pass_items):
             return "Annual Pass Revenue"
-        if any(item.strip().lower() == f.strip().lower() for f in fnb_items):return "F&B Revenue"
+        if any(item.strip().lower() == f.strip().lower() for f in fnb_items):
         if counter in fnb_counters:
             return "F&B Revenue"
         if counter in game_counters:
